@@ -17,7 +17,7 @@ jobs:
 
       - name: cmake fltk
         shell: cmd
-        run: cd fltk && cmake.exe -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="build/fltk" -B./build
+        run: cd fltk && cmake.exe -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DOPTION_BUILD_SHARED_LIBS=OFF -DFLTK_USE_BUILTIN_PNG=ON -DFLTK_USE_BUILTIN_ZLIB=ON -DFLTK_USE_BUILTIN_JPEG=ON DFLTK_BUILD_TEST=OFF -DFLTK_BUILD_EXAMPLES=OFF -DCMAKE_INSTALL_PREFIX="build/fltk" -B./build
       
       - name: mingw build 
         shell: cmd
