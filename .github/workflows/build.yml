@@ -1,0 +1,38 @@
+name: fltk-cpp-prebuilt-release-actions-workflow
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: windows-latest
+    env:
+      mingwTargetZip: fltk-${{ github.ref_name }}-mingw.zip
+    steps:
+      - name: git clone fltk
+        run: git clone --branch release-1.3.8 https://github.com/fltk/fltk.git
+
+      - name: cmake fltk
+        shell: cmd
+        run: cd fltk && cmake.exe -G"MinGW Makefiles" -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX="build/fltk" -B./build
+      
+      - name: mingw build 
+        shell: cmd
+        run: cd fltk\build && mingw32-make install
+        
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: "zip"
+          directory: "fltk/build/fltk"
+          filename: "${{ env.mingwTargetZip }}"
+          
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "fltk/build/fltk/${{ env.mingwTargetZip }}"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
